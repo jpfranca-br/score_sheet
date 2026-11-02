@@ -1,81 +1,127 @@
-# Gerador de Súmulas de Tiro
+# Shooting Score Sheet Generator
 
-Este projeto gera súmulas em PDF a partir de uma planilha Excel `.xlsx`.
+This project generates PDF score sheets from an Excel `.xlsx` spreadsheet.
 
-## Baixar o projeto
+## Download the project
 
-No Windows, macOS ou Linux, instale o Git e execute:
+On Windows, macOS, or Linux, install Git and run:
 
 ```bash
 git clone https://github.com/jpfranca-br/score_sheet.git
 cd score_sheet
 ```
 
-Para atualizar uma cópia já instalada:
+To update an existing copy:
 
 ```bash
 git pull
 ```
 
-## Arquivos principais
+## Main files
 
-- `gerar_sumulas.py`: gera o PDF localmente a partir da linha de comando.
-- `app_web.py`: disponibiliza um gerador de PDF em uma página web.
-- `provas.xlsx`: planilha modelo com os campos da aba `Provas`.
-- `requirements.txt`: dependências do gerador local.
-- `requirements-web.txt`: dependências da versão web.
-- `deploy/`: arquivos auxiliares de implantação em servidor.
+- `gerar_sumulas.py`: generates a PDF locally from the command line.
+- `app_web.py`: provides a PDF generator through a web page.
+- `provas.xlsx`: sample spreadsheet containing the `Provas` worksheet fields.
+- `requirements.txt`: dependencies for the local generator.
+- `requirements-web.txt`: dependencies for the web version.
+- `deploy/`: files for server deployment.
 
-## Usar localmente no Windows
+## Use locally on Windows
 
-Crie um ambiente Python, instale as dependências e gere o PDF:
+Create a Python environment, install the dependencies, and generate the PDF:
 
 ```powershell
 py -m venv .venv
-.\.venv\Scripts\activate
+.\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 python gerar_sumulas.py
 ```
 
-O comando padrão lê `provas.xlsx` na própria pasta do projeto e cria `sumulas.pdf` ao lado da planilha. A biblioteca PDF será aberta automaticamente no Windows.
+By default, the command reads `provas.xlsx` from the project folder and creates `sumulas.pdf` next to the spreadsheet. On Windows, the PDF opens automatically in the default PDF application.
 
-Também é possível informar arquivos diferentes:
+You can also specify different input and output files:
 
 ```powershell
 python gerar_sumulas.py caminho\da\planilha.xlsx
 python gerar_sumulas.py caminho\da\planilha.xlsx caminho\do\resultado.pdf
 ```
 
-## Usar o gerador pela rede local
+## Use locally on Ubuntu
 
-Instale também as dependências da versão web:
+Install Python and Git if they are not already available:
 
-```powershell
+```bash
+sudo apt update
+sudo apt install -y git python3 python3-venv
+```
+
+Clone the project and create a virtual environment:
+
+```bash
+git clone https://github.com/jpfranca-br/score_sheet.git
+cd score_sheet
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+```
+
+### Generate a PDF from the command line
+
+Install the local dependencies and run the generator:
+
+```bash
+pip install -r requirements.txt
+python gerar_sumulas.py
+```
+
+The default command reads `provas.xlsx` and creates `sumulas.pdf` in the project folder. To use another spreadsheet and output location:
+
+```bash
+python gerar_sumulas.py /path/to/spreadsheet.xlsx
+python gerar_sumulas.py /path/to/spreadsheet.xlsx /path/to/output.pdf
+```
+
+### Run the web generator on Ubuntu
+
+Install the web dependencies and start the application:
+
+```bash
 pip install -r requirements-web.txt
 python app_web.py
 ```
 
-Abra `http://127.0.0.1:8000` no navegador deste mesmo computador. Para que outros dispositivos da rede acessem a aplicação, execute-a com um servidor adequado ou configure separadamente o modo de exposição desejado.
+Open `http://127.0.0.1:8000` in a browser on the same Ubuntu computer. Stop the server with `Ctrl+C`.
 
-## Local ou web: qual diferença?
+## Use the web generator on the local network
 
-| Uso | Programa | Entrada | Saída |
+Install the web dependencies as described for Windows or Ubuntu:
+
+```bash
+pip install -r requirements-web.txt
+python app_web.py
+```
+
+Open `http://127.0.0.1:8000` in the browser on the same computer. The development server only listens on the loopback address `127.0.0.1`; use a production server or configure an authorized exposure method before allowing other devices to connect.
+
+## Local or web: which one should I use?
+
+| Use | Program | Input | Output |
 |---|---|---|---|
-| Desktop/linha de comando | `gerar_sumulas.py` | Planilha local | Arquivo PDF local |
-| Navegador | `app_web.py` | Upload de uma planilha pelo navegador | PDF enviado para download |
+| Desktop/command line | `gerar_sumulas.py` | Local spreadsheet | Local PDF file |
+| Browser | `app_web.py` | Spreadsheet uploaded through the browser | PDF download |
 
-`gerar_sumulas.py` é o modo mais simples para produzir PDFs em uma máquina. Ele grava o PDF no disco e não precisa de navegador.
+`gerar_sumulas.py` is the simplest way to produce PDFs on one machine. It writes the PDF to disk and does not require a browser.
 
-`app_web.py` oferece uma interface web. Neste modo, o arquivo enviado é processado em memória; a aplicação não guarda permanentemente a planilha do usuário. Em desenvolvimento, ele usa o servidor integrado do Flask e aceita conexões apenas em `127.0.0.1`.
+`app_web.py` provides a web interface. Uploaded files are processed in memory and are not stored permanently by the application. In development, the built-in Flask server accepts connections only on `127.0.0.1`.
 
-## Executar em um servidor Linux
+## Run on a Linux server
 
-O conteúdo completo está em [DEPLOY.md](DEPLOY.md).
+See the complete deployment guide in [DEPLOY.md](DEPLOY.md).
 
-Resumo:
+Summary:
 
-1. Instale os pacotes Python da versão web.
-2. Inicie o Gunicorn na porta local `127.0.0.1:8000`.
-3. Configure o serviço do sistema com `deploy/sumulas.service`.
-4. Escolha como expor o serviço à Internet; esta documentação não impõe uma solução de proxy ou túnel.
+1. Install the Python packages for the web version.
+2. Start Gunicorn on local port `127.0.0.1:8000`.
+3. Configure the system service with `deploy/sumulas.service`.
+4. Choose how the service should be exposed to the network; the documentation does not prescribe a proxy or tunnel solution.
