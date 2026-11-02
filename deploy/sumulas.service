@@ -1,0 +1,19 @@
+# /etc/systemd/system/sumulas.service
+[Unit]
+Description=Gerador de Sumulas (gunicorn)
+After=network.target
+
+[Service]
+User=sumulas
+Group=sumulas
+WorkingDirectory=/opt/sumulas
+ExecStart=/opt/sumulas/.venv/bin/gunicorn --workers 2 --timeout 60 --bind 127.0.0.1:8000 app_web:app
+Restart=on-failure
+# Endurecimento básico
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
